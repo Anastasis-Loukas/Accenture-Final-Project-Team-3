@@ -47,7 +47,7 @@ sales = sales.withColumnRenamed("Unit_Price", "UnitPrice")
 
 # COMMAND ----------
 
-from pyspark.sql.functions import regexp_replace, to_date, col
+from pyspark.sql.functions import regexp_replace, to_date, col , when , length
 
 sales = sales.withColumn(
     "OrderDate",
@@ -73,6 +73,28 @@ sales = sales.withColumn("Sales",
 
 sales = sales.withColumn("Cost",
         regexp_replace("Cost", "[$,]", "").cast("double")
+)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC We identified Product Keys that where 4-digits , we count them and we decided to erase the last digit as it was zero in all five examples. There were only 5 out of 400 , and we decided that it was a typo.
+
+# COMMAND ----------
+
+sales.filter(
+    (col("ProductKey") >= 1000) & (col("ProductKey") <= 9999)
+).show()
+
+# COMMAND ----------
+
+
+sales = sales.withColumn(
+    "ProductKey",
+    when(
+        length(col("ProductKey").cast("string")) == 4,
+        regexp_replace(col("ProductKey").cast("string"), "0$", "").cast("int")
+    ).otherwise(col("ProductKey"))
 )
 
 # COMMAND ----------
