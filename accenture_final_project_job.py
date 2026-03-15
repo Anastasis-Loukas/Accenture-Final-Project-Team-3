@@ -1,6 +1,6 @@
 # Upgrade Databricks SDK to the latest version and restart Python to see updated packages
-%pip install --upgrade databricks-sdk==0.70.0
-%restart_python
+# %pip install --upgrade databricks-sdk==0.70.0
+# %restart_python
 
 from databricks.sdk.service.jobs import JobSettings as Job
 
